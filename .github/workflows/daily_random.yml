@@ -3,6 +3,7 @@ name: Daily Random Code Generation
 on:
   schedule:
     - cron: '0 * * * *'  # Runs every hour at minute 0
+  workflow_dispatch:  # This enables manual triggering
 
 jobs:
   build:
