@@ -37,7 +37,7 @@ jobs:
     - name: Install dependencies
       if: steps.trigger_check.outputs.proceed == 'true'
       run: |
-        pip install requests langchain openai beautifulsoup4
+        pip install requests langchain openai beautifulsoup4 langchain_community
 
     - name: Check out repository
       if: steps.trigger_check.outputs.proceed == 'true'
