@@ -1,5 +1,6 @@
 # 3L1T310XCODER
 Produces coding results.
+![All Green Boxes](all_green_boxes.png)
 
 This GitHub Action automates the generation of useful Python code based on headlines from Coindesk. The action scrapes a headline, uses it to prompt an OpenAI language model (via Langchain) to generate an analysis-related code prompt, and then produces a working Python script based on the generated prompt. The resulting code is committed back to the repository once per day at a random time.
 
