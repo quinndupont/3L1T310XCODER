@@ -4,32 +4,16 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy import stats
 
-# Gather data
-# Historical price data for Bitcoin, gold, and the S&P 500
-btc_df = pd.read_csv('bitcoin_price.csv')
-gold_df = pd.read_csv('gold_price.csv')
-sp500_df = pd.read_csv('sp500_price.csv')
+# Obtain historical data for Bitcoin, Gold, and S&P 500 from Yahoo Finance
+bitcoin_df = pd.read_csv("https://query1.finance.yahoo.com/v7/finance/download/BTC-USD?period1=1588291200&period2=1620576000&interval=1d&events=history&includeAdjustedClose=true")
+gold_df = pd.read_csv("https://query1.finance.yahoo.com/v7/finance/download/GC=F?period1=1588291200&period2=1620576000&interval=1d&events=history&includeAdjustedClose=true")
+sp500_df = pd.read_csv("https://query1.finance.yahoo.com/v7/finance/download/%5EGSPC?period1=1588291200&period2=1620576000&interval=1d&events=history&includeAdjustedClose=true")
 
-# Information on the overlooked catalyst
-catalyst = 'Elon Musk tweets about Bitcoin'
+# Clean the data by removing null values and outliers
+bitcoin_df.dropna(inplace=True)
+gold_df.dropna(inplace=True)
+sp500_df.dropna(inplace=True)
 
-# Clean and preprocess data
-# Remove any missing values
-btc_df.dropna()
-gold_df.dropna()
-sp500_df.dropna()
-
-# Convert data types
-btc_df['Date'] = pd.to_datetime(btc_df['Date'])
-gold_df['Date'] = pd.to_datetime(gold_df['Date'])
-sp500_df['Date'] = pd.to_datetime(sp500_df['Date'])
-
-# Organize data into time series format
-btc_df = btc_df.set_index('Date')
-gold_df = gold_df.set_index('Date')
-sp500_df = sp500_df.set_index('Date')
-
-# Merge dataframes on date
-merged_df = pd.merge(btc_df, gold_df, on='Date', how='outer')
-merged_df = pd.merge(merged_df, sp500_df,
+# Use descriptive statistics to get an overall understanding of the data
