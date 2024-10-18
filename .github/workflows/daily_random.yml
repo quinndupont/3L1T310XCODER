@@ -10,43 +10,48 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Check if we should proceed
-      id: random_check
+    - name: Determine Trigger Source
+      id: trigger_check
       run: |
-        echo "Randomly deciding whether to proceed"
-        RANDOM_NUMBER=$(( RANDOM % 24 ))
-        if [ "$RANDOM_NUMBER" -eq "0" ]; then
-          echo "Proceeding with code generation"
+        if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+          echo "Manually triggered, skipping random check."
           echo "proceed=true" >> $GITHUB_OUTPUT
         else
-          echo "Skipping this run"
-          echo "proceed=false" >> $GITHUB_OUTPUT
+          echo "Scheduled run, checking if we should proceed."
+          RANDOM_NUMBER=$(( RANDOM % 24 ))
+          if [ "$RANDOM_NUMBER" -eq "0" ]; then
+            echo "Proceeding with code generation"
+            echo "proceed=true" >> $GITHUB_OUTPUT
+          else
+            echo "Skipping this run"
+            echo "proceed=false" >> $GITHUB_OUTPUT
+          fi
         fi
 
     - name: Set up Python
-      if: steps.random_check.outputs.proceed == 'true'
+      if: steps.trigger_check.outputs.proceed == 'true'
       uses: actions/setup-python@v5  # Updated version to v5
       with:
         python-version: '3.x'
 
     - name: Install dependencies
-      if: steps.random_check.outputs.proceed == 'true'
+      if: steps.trigger_check.outputs.proceed == 'true'
       run: |
         pip install requests langchain openai beautifulsoup4
 
     - name: Check out repository
-      if: steps.random_check.outputs.proceed == 'true'
+      if: steps.trigger_check.outputs.proceed == 'true'
       uses: actions/checkout@v4  # Updated version to v4
 
     - name: Run script
-      if: steps.random_check.outputs.proceed == 'true'
+      if: steps.trigger_check.outputs.proceed == 'true'
       env:
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       run: |
         python generate_code.py
 
     - name: Commit and push changes
-      if: steps.random_check.outputs.proceed == 'true'
+      if: steps.trigger_check.outputs.proceed == 'true'
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
