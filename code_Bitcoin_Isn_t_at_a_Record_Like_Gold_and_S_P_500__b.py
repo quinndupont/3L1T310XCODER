@@ -5,28 +5,29 @@ import pandas as pd
 import numpy as np
 import datetime as dt
 import matplotlib.pyplot as plt
-import seaborn as sns
+import pandas_datareader.data as web
+from ta import *
+from ta.utils import dropna
+from statsmodels.tsa.stattools import coint
 
-# Define function to calculate percentage difference
-def calculate_percentage_difference(current_value, record_high):
-    """
-    Calculates the percentage difference between the current value and the record high.
-    Inputs:
-        current_value: float, representing the current value of a stock or asset
-        record_high: float, representing the record high of the stock or asset
-    Returns:
-        percentage_difference: float, representing the percentage difference between current value and record high
-    """
-    percentage_difference = 100 * (current_value - record_high) / record_high
-    return percentage_difference
+# Define the time period for data collection
+start = dt.datetime(2015,1,1)
+end = dt.datetime.now()
 
-# Define function to prompt user for current price and record highs of assets
-def get_input():
-    """
-    Prompts user to input the current price of Bitcoin, as well as the record highs of Gold and the S&P 500.
-    Returns:
-        btc_price: float, representing the current price of Bitcoin
-        gold_record_high: float, representing the record high of Gold
-        sp500_record_high: float, representing the record high of the S&P 500
-    """
-    btc_price = float(input("Enter the current price
+# Retrieve and compile historical data for Bitcoin, Gold, and S&P 500
+btc = web.DataReader('BTC-USD', 'yahoo', start, end) # Bitcoin
+gold = web.DataReader('GC=F', 'yahoo', start, end) # Gold
+snp = web.DataReader('^GSPC', 'yahoo', start, end) # S&P 500
+
+# Calculate and plot the trends and patterns of each asset
+fig, (ax1, ax2, ax3) = plt.subplots(3, sharex=True, figsize=(10,10))
+
+# Plot Bitcoin
+ax1.plot(btc['Adj Close'])
+ax1.set_title('Bitcoin Price')
+ax1.set_ylabel('Price ($)')
+
+# Plot Gold
+ax2.plot(gold['Adj Close'])
+ax2.set_title('Gold Price')
+ax2
