@@ -3,31 +3,36 @@
 # Import necessary libraries
 import pandas as pd
 import numpy as np
-import datetime as dt
 import matplotlib.pyplot as plt
-import pandas_datareader.data as web
-from ta import *
-from ta.utils import dropna
-from statsmodels.tsa.stattools import coint
+import requests
+from bs4 import BeautifulSoup
 
-# Define the time period for data collection
-start = dt.datetime(2015,1,1)
-end = dt.datetime.now()
+# Define function to gather historical data
+def get_historical_data(symbol):
+    '''
+    This function takes in a stock symbol and returns a dataframe with historical price data
+    '''
+    # Define base URL for Yahoo Finance API
+    base_url = "https://query1.finance.yahoo.com/v7/finance/download/"
 
-# Retrieve and compile historical data for Bitcoin, Gold, and S&P 500
-btc = web.DataReader('BTC-USD', 'yahoo', start, end) # Bitcoin
-gold = web.DataReader('GC=F', 'yahoo', start, end) # Gold
-snp = web.DataReader('^GSPC', 'yahoo', start, end) # S&P 500
+    # Define start and end dates for data retrieval
+    start_date = '2015-01-01'
+    end_date = '2020-12-31'
 
-# Calculate and plot the trends and patterns of each asset
-fig, (ax1, ax2, ax3) = plt.subplots(3, sharex=True, figsize=(10,10))
+    # Make API call to retrieve historical data
+    url = base_url + symbol + '?period1=' + start_date + '&period2=' + end_date + '&interval=1d&events=history&includeAdjustedClose=true'
+    response = requests.get(url)
 
-# Plot Bitcoin
-ax1.plot(btc['Adj Close'])
-ax1.set_title('Bitcoin Price')
-ax1.set_ylabel('Price ($)')
+    # Convert response to dataframe
+    df = pd.read_csv(response.text)
 
-# Plot Gold
-ax2.plot(gold['Adj Close'])
-ax2.set_title('Gold Price')
-ax2
+    # Set date as index
+    df.set_index('Date', inplace=True)
+
+    # Return dataframe
+    return df
+
+# Define function to gather news and events
+def get_news(symbol):
+    '''
+    This function takes in a stock symbol and returns a
