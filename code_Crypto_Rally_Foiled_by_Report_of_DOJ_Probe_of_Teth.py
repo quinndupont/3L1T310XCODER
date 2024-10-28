@@ -1,29 +1,26 @@
 
 
 # Import necessary libraries
-import requests
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
-from datetime import datetime
+import requests
+import json
 
-# Define the function for analyzing the impact of DOJ probe on the cryptocurrency market
-def probe_analysis(headline, crypto_prices, news_articles):
-    """
-    This function analyzes the impact of a DOJ probe on the cryptocurrency market, specifically focusing on Tether.
-    
-    Inputs:
-    - headline: The headline from Coindesk, a string
-    - crypto_prices: Real-time data on the prices of major cryptocurrencies, a dictionary with cryptocurrency names as keys and their corresponding prices as values
-    - news_articles: News articles and social media posts related to the DOJ probe and Tether, a list of strings
-    
-    Outputs:
-    - A print statement summarizing the impact of the probe on the market and Tether
-    - A line chart showing the trend of Tether's price during the period of the probe
-    - A bar chart comparing Tether's performance with other major cryptocurrencies during the period of the probe
-    """
-    
-    # Print the headline
-    print(headline)
-    
-    # Convert the dictionary of crypto prices into a dataframe
-    crypto_df = pd.DataFrame.from_dict(crypto_prices, orient='index', columns=['
+# Define function to get historical data for Tether and overall crypto market
+def get_historical_data():
+    # Set start and end date for data
+    start = "2020-01-01"
+    end = "2021-01-01"
+
+    # Get data for Tether and overall crypto market from CoinMarketCap API
+    tether_data = requests.get('https://api.coinmarketcap.com/data-api/v3/cryptocurrency/historical?id=825&convertId=2781&timeStart='+start+'&timeEnd='+end).json()
+    crypto_data = requests.get('https://api.coinmarketcap.com/data-api/v3/cryptocurrency/historical?id=1&convertId=2781&timeStart='+start+'&timeEnd='+end).json()
+
+    # Convert data to pandas dataframe
+    tether_df = pd.DataFrame(tether_data['data']['quotes'])
+    crypto_df = pd.DataFrame(crypto_data['data']['quotes'])
+
+    # Rename columns
+    tether_df = tether_df[['time_open', 'price_close']]
+    tether_df.columns = ['date', 'tether_price']
