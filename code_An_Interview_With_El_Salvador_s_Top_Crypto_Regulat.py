@@ -1,41 +1,31 @@
 
 
 # Import necessary libraries
-import re
-import requests
-from bs4 import BeautifulSoup
+import re 
 
-# Define variables
-headline = ''
-country = ''
-regulator = ''
-statement = ''
-revolution = ''
+# Define the headline
+headline = "An Interview With El Salvador’s Top Crypto Regulator: ‘Developing Countries Can Lead the Financial Revolution’"
 
-# Make HTTP request and retrieve headline
-url = 'https://www.coindesk.com/el-salvador-crypto-regulator-developing-countries-financial-revolution'
-response = requests.get(url)
-soup = BeautifulSoup(response.content, 'html.parser')
-headline = soup.find('h1').get_text()
+# 1. Identify the main subject of the headline
+# Use regular expressions to extract the main subject, which is enclosed in the first set of double quotes
+main_subject = re.findall('"([^"]*)"', headline)[0]
 
-# Clean headline
-headline = re.sub('[^a-zA-Z\s]', '', headline) # Remove special characters
-headline = re.sub('\d+', '', headline) # Remove numbers
-headline = headline.strip() # Remove leading and trailing whitespaces
-headline = headline.lower() # Convert to lowercase
-print(headline)
+# Print the main subject
+print("The main subject of the headline is:", main_subject)
 
-# Get country
-country = re.search('([a-zA-Z]+)\’s', headline).group(1)
-print(country)
+# 2. Analyze the role of the subject
+# Use regular expressions to extract the subject's role, which is enclosed in the second set of double quotes
+role = re.findall('"([^"]*)"', headline)[1]
 
-# Get regulator
-regulator = re.search('interview with ([a-zA-Z]+)', headline).group(1)
-print(regulator)
+# Print the subject's role
+print("The subject's role is:", role)
 
-# Get statement
-statement = re.search('\: (.+)', headline).group(1)
-print(statement)
+# 3. Explore the country's stance on cryptocurrency
+# Use regular expressions to extract the country's name, which is enclosed in the third set of double quotes
+country = re.findall('"([^"]*)"', headline)[2]
 
-# Get revolution
-revolution = re.search('can (.+)$
+# Print the country's name
+print("The country mentioned in the headline is:", country)
+
+# Print the country's stance on cryptocurrency
+print("El Salvador's stance on cryptocurrency is that it has
