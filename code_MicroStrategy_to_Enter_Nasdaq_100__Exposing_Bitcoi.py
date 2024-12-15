@@ -1,38 +1,30 @@
 
 
 # Import necessary libraries
-import requests
-import json
 import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
-from datetime import datetime
-from textblob import TextBlob
-%matplotlib inline
+import numpy as np
 
-# Define function to pull real-time data from Nasdaq website
-def get_nasdaq_data(symbol):
-    # Construct API url
-    url = 'https://api.nasdaq.com/api/quote/{}/info?assetclass=stocks'.format(symbol)
-    # Make request
-    response = requests.get(url)
-    # Convert response to json
-    data = response.json()
-    # Get relevant data
-    price = data['data']['primaryData']['lastSalePrice']
-    volume = data['data']['primaryData']['totalVolume']
-    return price, volume
+# Obtain dataset of historical stock prices
+msft_df = pd.read_csv('msft_stock_prices.csv') # MicroStrategy's stock prices
+btc_df = pd.read_csv('btc_stock_prices.csv') # Bitcoin-linked stock prices
+nasdaq_df = pd.read_csv('nasdaq100_index.csv') # Nasdaq 100 index prices
 
-# Define function to pull real-time data from cryptocurrency exchanges
-def get_crypto_data(symbol):
-    # Construct API url
-    url = 'https://api.coincap.io/v2/assets/{}'.format(symbol)
-    # Make request
-    response = requests.get(url)
-    # Convert response to json
-    data = response.json()
-    # Get relevant data
-    price = data['data']['priceUsd']
-    return price
+# Clean and preprocess the data
+msft_df['Date'] = pd.to_datetime(msft_df['Date']) # Convert Date column to datetime format
+msft_df = msft_df.dropna() # Drop any rows with missing values
 
-# Define function to calculate correlation between two
+btc_df['Date'] = pd.to_datetime(btc_df['Date'])
+btc_df = btc_df.dropna()
+
+nasdaq_df['Date'] = pd.to_datetime(nasdaq_df['Date'])
+nasdaq_df = nasdaq_df.dropna()
+
+# Create a line graph for MicroStrategy's stock price over time
+plt.plot(msft_df['Date'], msft_df['Close'])
+plt.title('MicroStrategy Stock Price Over Time')
+plt.xlabel('Date')
+plt.ylabel('Stock Price ($)')
+plt.show()
+
+# Create a scatter plot for MicroStrategy's stock price and Bitcoin
