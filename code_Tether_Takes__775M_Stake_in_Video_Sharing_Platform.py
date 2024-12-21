@@ -1,36 +1,33 @@
-
+ 
 
 # Import necessary libraries
-import requests
-from bs4 import BeautifulSoup
-import nltk
-from nltk.sentiment.vader import SentimentIntensityAnalyzer
-import yfinance as yf
-import matplotlib.pyplot as plt
+import requests # for making API calls
+from bs4 import BeautifulSoup # for web scraping
+import re # for regular expressions
 
-# Define function to retrieve latest news articles and updates on partnership
-def get_news():
-    # Specify URL of news source
-    url = "https://www.coindesk.com/search?q=Tether+Rumble"
-    
-    # Send GET request to retrieve HTML content
-    response = requests.get(url)
-    
-    # Create BeautifulSoup object to parse HTML content
-    soup = BeautifulSoup(response.content, 'html.parser')
-    
-    # Find all news articles on partnership between Tether and Rumble
-    articles = soup.find_all('li', {'class': 'post'})
-    
-    # Create list to store news article titles and links
-    news_articles = []
-    
-    # Loop through the articles and extract title and link
-    for article in articles:
-        title = article.find('h3').text
-        link = article.find('a', {'class': 'fade'}).get('href')
-        
-        # Append title and link as a tuple to news_articles list
-        news_articles.append((title, link))
-        
-    # Return list of news articles
+# Define the headline and extract key information
+headline = 'Tether Takes $775M Stake in Video-Sharing Platform Rumble; RUM Shares Soar 41%'
+company1 = 'Tether'
+company2 = 'Rumble'
+investment = 775000000
+stock_symbol = 'RUM'
+
+# Retrieve financial data
+# Use the CoinMarketCap API to get the latest financial data for Tether and Rumble
+# API documentation: https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyQuotesLatest
+url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest'
+parameters = {'symbol': stock_symbol, 'convert': 'USD'}
+
+# Add API key to headers
+headers = {
+  'X-CMC_PRO_API_KEY': 'INSERT_YOUR_API_KEY_HERE',
+}
+
+# Make the API call
+response = requests.get(url, headers=headers, params=parameters)
+
+# Convert the response to a JSON object
+data = response.json()
+
+# Extract the relevant information from the response
+# Get the current market price, market capital
