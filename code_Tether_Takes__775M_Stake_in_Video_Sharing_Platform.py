@@ -1,33 +1,18 @@
- 
+
 
 # Import necessary libraries
-import requests # for making API calls
-from bs4 import BeautifulSoup # for web scraping
-import re # for regular expressions
+import pandas as pd # for data analysis
+import matplotlib.pyplot as plt # for data visualization
 
-# Define the headline and extract key information
-headline = 'Tether Takes $775M Stake in Video-Sharing Platform Rumble; RUM Shares Soar 41%'
-company1 = 'Tether'
-company2 = 'Rumble'
-investment = 775000000
-stock_symbol = 'RUM'
+# Gather input data
+tether_investment = 775000000 # Tether's investment amount in USD
+rum_shares_value = 20 # Current value of RUM shares in USD
+previous_investments = [500000000, 250000000] # Previous investments in RUM shares in USD
+historical_prices = pd.DataFrame({'Date': ['2021-01-01', '2021-02-01', '2021-03-01', '2021-04-01', '2021-05-01', '2021-06-01'],
+                                  'Price': [15, 18, 22, 25, 30, 35]}) # Historical data of RUM share prices and market trends in USD
 
-# Retrieve financial data
-# Use the CoinMarketCap API to get the latest financial data for Tether and Rumble
-# API documentation: https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyQuotesLatest
-url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest'
-parameters = {'symbol': stock_symbol, 'convert': 'USD'}
+# Calculate percentage increase in RUM share value
+increase_percentage = (rum_shares_value - historical_prices['Price'].iloc[-1]) / historical_prices['Price'].iloc[-1] * 100
+print("The percentage increase in RUM share value is", round(increase_percentage, 2), "%")
 
-# Add API key to headers
-headers = {
-  'X-CMC_PRO_API_KEY': 'INSERT_YOUR_API_KEY_HERE',
-}
-
-# Make the API call
-response = requests.get(url, headers=headers, params=parameters)
-
-# Convert the response to a JSON object
-data = response.json()
-
-# Extract the relevant information from the response
-# Get the current market price, market capital
+# Compare to previous investments and share prices
