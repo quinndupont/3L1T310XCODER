@@ -1,31 +1,27 @@
 
 
 # Import necessary libraries
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import requests
+import pandas as pd             # For data manipulation and analysis
+import numpy as np              # For mathematical calculations
+import matplotlib.pyplot as plt # For data visualization
+import requests                 # For making API requests
+from datetime import datetime   # For working with date and time
 
-# Define function to retrieve historical price data from CoinGecko API
-def get_price_data(crypto, currency, start_date, end_date):
-    """
-    Retrieves historical price data for a cryptocurrency in a specific currency from CoinGecko API.
-    
-    Args:
-        crypto (str): Cryptocurrency symbol (e.g. "XRP")
-        currency (str): Currency symbol (e.g. "USD")
-        start_date (str): Start date in format "dd-mm-yyyy"
-        end_date (str): End date in format "dd-mm-yyyy"
-        
-    Returns:
-        df (pandas.DataFrame): Dataframe containing price data
-    """
-    # Construct API URL
-    base_url = 'https://api.coingecko.com/api/v3/coins/{crypto}/market_chart/range?vs_currency={currency}&from={start_date}&to={end_date}'
-    url = base_url.format(crypto=crypto, currency=currency, start_date=start_date, end_date=end_date)
-    
-    # Make API request and retrieve data
-    response = requests.get(url)
-    data = response.json()
-    
-    # Convert data
+# Set the API endpoints for cryptocurrency exchange platforms and foreign exchange websites
+xrp_url = 'https://api.coinmarketcap.com/v1/ticker/xrp/'
+btc_url = 'https://api.coinmarketcap.com/v1/ticker/bitcoin/'
+usd_url = 'https://api.exchangeratesapi.io/latest?base=USD'
+
+# Function to get data from the API endpoints
+def get_data(url):
+    response = requests.get(url)  # Make a GET request to the API endpoint
+    data = response.json()        # Convert the response to a JSON format
+    return data[0]                # Return the first element of the JSON data
+
+# Function to get percentage change in value over a specific time period
+def get_percentage_change(current_value, previous_value):
+    return (current_value - previous_value) / previous_value * 100
+
+# Function to convert UNIX timestamp to a readable date
+def convert_to_date(timestamp):
+    return datetime
