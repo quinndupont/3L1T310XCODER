@@ -1,27 +1,31 @@
 
 
 # Import necessary libraries
-import pandas as pd
-import numpy as np
-import nltk
-from nltk.sentiment.vader import SentimentIntensityAnalyzer
-import matplotlib.pyplot as plt
+import requests
+from textblob import TextBlob
+import datetime
 
-# Retrieve data on BTC ETFs from CoinGecko
-btc_etf_data = pd.read_csv('https://api.coingecko.com/api/v3/coins/bitcoin?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false')
+# Define function to gather data from various sources
+def get_data():
+    # Get current price of Bitcoin from a cryptocurrency exchange API
+    response = requests.get('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd')
+    current_price = response.json()['bitcoin']['usd']
+    
+    # Get trading volume from a trading platform API
+    response = requests.get('https://api.coingecko.com/api/v3/coins/bitcoin')
+    trading_volume = response.json()['market_data']['total_volume']['usd']
+    
+    # Get latest news about Bitcoin from a news API
+    response = requests.get('http://newsapi.org/v2/everything?q=bitcoin&apiKey=API_KEY')
+    latest_news = response.json()['articles'][0]['title']
+    
+    return current_price, trading_volume, latest_news
 
-# Clean the data by removing irrelevant columns and handling missing values
-btc_etf_data = btc_etf_data.drop(['community_score', 'developer_score', 'public_interest_score'], axis=1)
-btc_etf_data = btc_etf_data.replace('-', np.nan).dropna()
-
-# Calculate total amount lost in BTC ETFs
-total_lost = btc_etf_data.iloc[0]['market_cap'] - btc_etf_data.iloc[1]['market_cap']
-
-# Perform sentiment analysis on headline using NLTK
-headline = 'BTC ETFs experience significant drop, causing concern for Bitcoin market'
-sid = SentimentIntensityAnalyzer()
-sentiment_scores = sid.polarity_scores(headline)
-sentiment = sentiment_scores['compound']
-
-# Extract key phrases and keywords from headline
-tokens = nltk.word_tokenize
+# Define function to perform sentiment analysis
+def sentiment_analysis(news):
+    # Create a TextBlob object to analyze the headline
+    blob = TextBlob(news)
+    
+    # Get sentiment polarity and subjectivity
+    polarity = blob.sentiment.polarity
+    subjectivity =
