@@ -1,31 +1,32 @@
 
 
 # Import necessary libraries
-import requests
-from textblob import TextBlob
-import datetime
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from datetime import datetime
 
-# Define function to gather data from various sources
-def get_data():
-    # Get current price of Bitcoin from a cryptocurrency exchange API
-    response = requests.get('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd')
-    current_price = response.json()['bitcoin']['usd']
+# Define function to gather data on ETFs performance and Bitcoin price
+def get_data(start_date, end_date):
+    # Read CSV file containing ETFs data
+    etf_df = pd.read_csv('etf_data.csv')
     
-    # Get trading volume from a trading platform API
-    response = requests.get('https://api.coingecko.com/api/v3/coins/bitcoin')
-    trading_volume = response.json()['market_data']['total_volume']['usd']
+    # Convert date column to datetime format
+    etf_df['Date'] = pd.to_datetime(etf_df['Date'])
     
-    # Get latest news about Bitcoin from a news API
-    response = requests.get('http://newsapi.org/v2/everything?q=bitcoin&apiKey=API_KEY')
-    latest_news = response.json()['articles'][0]['title']
+    # Filter data by start and end date
+    etf_df = etf_df[(etf_df['Date'] >= start_date) & (etf_df['Date'] <= end_date)]
     
-    return current_price, trading_volume, latest_news
+    # Read CSV file containing Bitcoin price data
+    btc_df = pd.read_csv('btc_price.csv')
+    
+    # Convert date column to datetime format
+    btc_df['Date'] = pd.to_datetime(btc_df['Date'])
+    
+    # Filter data by start and end date
+    btc_df = btc_df[(btc_df['Date'] >= start_date) & (btc_df['Date'] <= end_date)]
+    
+    return etf_df, btc_df
 
-# Define function to perform sentiment analysis
-def sentiment_analysis(news):
-    # Create a TextBlob object to analyze the headline
-    blob = TextBlob(news)
-    
-    # Get sentiment polarity and subjectivity
-    polarity = blob.sentiment.polarity
-    subjectivity =
+# Define function to plot data in a line graph
+def plot_data(etf
