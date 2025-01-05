@@ -2,38 +2,31 @@
 
 # Import necessary libraries
 import requests
-import json
-import pandas as pd
+from bs4 import BeautifulSoup
+import nltk
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import matplotlib.pyplot as plt
-from textblob import TextBlob
-from datetime import datetime
+import pandas as pd
 
-# Define variables
-bitcoin_market_value = 0
-cango_mined_percentage = 0
-cango_revenue = 0
-
-# Web scraping to gather data on Cango's mining activities
-url = 'https://www.cango.com/mining-activities'
-r = requests.get(url)
-data = r.json()
-
-# Gather relevant data
-num_mining_rigs = data['mining_rigs']
-energy_consumption = data['energy_consumption']
-hash_rate = data['hash_rate']
-
-# Retrieve real-time data on Bitcoin prices and market trends
-api_key = 'API_KEY'
-base_url = 'https://api.coingecko.com/api/v3'
-endpoint = '/coins/bitcoin/market_chart'
-params = {'vs_currency': 'usd', 'days': '30'}
-r = requests.get(base_url + endpoint, params=params)
-data = r.json()
-
-# Get Bitcoin prices for the past 30 days
-bitcoin_prices = []
-for price in data['prices']:
-    bitcoin_prices.append(price[1])
-
-# Calculate average market value of Bitcoin for the past 30
+# Function for web scraping
+def web_scraping(url):
+    
+    # Send request to the URL
+    response = requests.get(url)
+    
+    # Parse the HTML content
+    soup = BeautifulSoup(response.content, 'html.parser')
+    
+    # Find all the relevant information using CSS selectors
+    founders = soup.select('.founders')[0].find_all('a')
+    founding_date = soup.select('.date')[0].text
+    funding_rounds = soup.select('.funding')[0].find_all('li')
+    key_executives = soup.select('.executives')[0].find_all('a')
+    partnerships = soup.select('.partnerships')[0].find_all('a')
+    
+    # Create a dictionary to store the data
+    data_dict = {
+        'Founders' : [founder.text for founder in founders],
+        'Founding Date' : founding_date,
+        'Funding Rounds' : [round.text for round in funding_rounds],
+        'Key Executives' : [executive.text for executive
