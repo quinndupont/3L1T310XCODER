@@ -1,37 +1,34 @@
 
 
 # Import necessary libraries
-import requests # for making HTTP requests
-from bs4 import BeautifulSoup # for web scraping
-import pandas as pd # for data analysis and manipulation
-from textblob import TextBlob # for sentiment analysis
-import matplotlib.pyplot as plt # for data visualization
+import requests
+import pandas as pd
+import matplotlib.pyplot as plt
+from datetime import datetime
 
+# Create a function to gather data from Coindesk
+def get_coindesk_data():
+    # Specify the URL for Coindesk API
+    url = "https://api.coindesk.com/v1/bpi/currentprice.json"
+    
+    # Send a GET request and store the response as a JSON object
+    response = requests.get(url).json()
+    
+    # Extract relevant data from the JSON object
+    # Current price of Bitcoin in USD
+    btc_price = response['bpi']['USD']['rate_float']
+    
+    # Timestamp when the data was retrieved
+    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    
+    # Create a dictionary to store the data
+    data = {'Timestamp': timestamp, 'BTC Price (USD)': btc_price}
+    
+    return data
 
-# Function to scrape news headlines from Coindesk for a given date range
-def scrape_headlines(start_date, end_date):
-  # Initialize an empty list to store headlines
-  headlines = []
-
-  # Define the base URL for Coindesk news
-  base_url = "https://www.coindesk.com/"
-
-  # Loop through all dates in the given range
-  for date in pd.date_range(start_date, end_date):
-    # Format the date as YYYY/MM/DD for the URL
-    url_date = date.strftime("%Y/%m/%d")
-
-    # Make a GET request to the URL
-    response = requests.get(base_url + url_date)
-
-    # Parse the HTML response
-    soup = BeautifulSoup(response.content, "html.parser")
-
-    # Find all headlines with class "fade"
-    headlines_list = soup.find_all(class_="fade")
-
-    # Append each headline to the list
-    for headline in headlines_list:
-      headlines.append(headline.text)
-
- 
+# Create a function to gather news data from a specified source
+def get_news_data(source):
+    # Specify the URL for the news source
+    url = "https://newsapi.org/v2/top-headlines?sources=" + source + "&apiKey=API_KEY"
+    
+    # Send a
