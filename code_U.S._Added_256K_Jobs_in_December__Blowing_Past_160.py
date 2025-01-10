@@ -4,25 +4,27 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# Read the data from Coindesk headline
-df = pd.read_csv('coindesk_job_data.csv')
+# Load the job market data for the month of December
+job_data = pd.read_csv("december_job_data.csv")
 
-# Display the data
-print("Job data from Coindesk headline:\n")
-print(df)
+# Calculate the difference between the actual number of jobs added and the estimated number of jobs
+actual_jobs_added = 256000
+estimated_jobs_added = 160000
+difference = actual_jobs_added - estimated_jobs_added
 
-# 1. Total number of jobs added in the U.S. during the month of December
-total_jobs_added = df['Actual Jobs Added'].sum()
-print("\nTotal number of jobs added in the U.S. during the month of December: {}".format(total_jobs_added))
+# Print the difference and determine if the job market performance was better or worse than expected
+print("The difference between the actual number of jobs added and the estimated number of jobs is: ", difference)
+if difference > 0:
+    print("The job market performance for the month of December was better than expected.")
+elif difference == 0:
+    print("The job market performance for the month of December was as expected.")
+else:
+    print("The job market performance for the month of December was worse than expected.")
 
-# 2. Estimated number of jobs that were expected to be added in December
-estimated_jobs_added = df['Estimated Jobs Added'].sum()
-print("Estimated number of jobs that were expected to be added in December: {}".format(estimated_jobs_added))
+# Determine which industries or sectors saw the most job growth and which ones were the least affected
+job_types = job_data['Job Type']
+job_locations = job_data['Job Location']
+job_growth = {}
 
-# 3. Difference between the actual number of jobs added and the estimated number
-difference = total_jobs_added - estimated_jobs_added
-print("Difference between the actual number of jobs added and the estimated number: {}".format(difference))
-
-# 4. Percentage increase or decrease in job growth compared to the estimated number
-percentage_change = (difference / estimated_jobs_added) * 100
-print("Percentage increase or decrease in job growth compared
+# Loop through the job types and locations to count the number of jobs in each industry and location
+for i in range(len
