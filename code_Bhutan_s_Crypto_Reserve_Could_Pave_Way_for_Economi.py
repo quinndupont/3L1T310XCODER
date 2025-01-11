@@ -2,27 +2,34 @@
 
 # Import necessary libraries
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
+import numpy as np
+import requests
+from bs4 import BeautifulSoup
 
-# Define function to gather data on Bhutan's crypto reserve
-def get_bhutan_crypto_reserve():
-    # Use web scraping to gather data on Bhutan's crypto reserve from a reliable source
-    # Store data in a dataframe
-    bhutan_crypto_df = pd.DataFrame()
-    return bhutan_crypto_df
+# Create a function to scrape data from the website
+def scrape_data(url):
+    # Send a GET request to the URL
+    response = requests.get(url)
+    # Parse the HTML content using BeautifulSoup
+    soup = BeautifulSoup(response.content, 'html.parser')
+    # Find the table containing the data
+    table = soup.find('table')
+    # Extract the table headers
+    headers = [header.text for header in table.find_all('th')]
+    # Extract the table rows
+    rows = []
+    for row in table.find_all('tr'):
+        rows.append([data.text for data in row.find_all('td')])
+    # Create a pandas dataframe with the extracted data
+    df = pd.DataFrame(rows, columns=headers)
+    # Drop the first row as it contains table headers again
+    df.drop(0, inplace=True)
+    # Reset the index
+    df.reset_index(drop=True, inplace=True)
+    # Return the dataframe
+    return df
 
-# Define function to gather data on economic growth rates of other countries
-def get_economic_growth_rates():
-    # Use API calls or web scraping to gather data on economic growth rates of other countries
-    # Store data in a dataframe
-    economic_growth_df = pd.DataFrame()
-    return economic_growth_df
+# Scrape data for Bhutan's cryptocurrency reserve
+crypto_df = scrape_data('https://www.bhutan.gov.bt/government-reserve-cryptocurrency')
 
-# Define function to compare data and analyze potential impact
-def analyze_impact(bhutan_crypto_df, economic_growth_df):
-    # Merge dataframes on common variables such as economic background and development level
-    merged_df = pd.merge(bhutan_crypto_df, economic_growth_df, on=['economic_background', 'development_level'])
-    
-    # Plot a scatter plot to visualize the relationship between Bhutan's crypto reserve and economic growth rates
-    sns.scatterplot(data=merged_df, x='crypto_reserve_value', y='economic_growth_rate')
+#
