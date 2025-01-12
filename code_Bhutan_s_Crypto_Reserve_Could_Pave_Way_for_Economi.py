@@ -2,35 +2,34 @@
 
 # Import necessary libraries
 import requests
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-from textblob import TextBlob
+from bs4 import BeautifulSoup
+import nltk
+from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
+from nltk import word_tokenize, pos_tag, ne_chunk
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+import gensim
+from gensim import corpora, models
 
-# 1. Data Scraping
-# Retrieve data from Coindesk about Bhutan's crypto reserve
-url = "https://www.coindesk.com/bhutan-crypto-reserve/"
+# 1. Retrieve the headline from Coindesk's website using web scraping techniques.
+# Make a GET request to Coindesk's website
+url = 'https://www.coindesk.com/'
 response = requests.get(url)
 
-# Check if response is successful
-if response.status_code == 200:
-    print("Successfully retrieved data from Coindesk.")
-else:
-    print("Data retrieval failed.")
-
-# Use BeautifulSoup to parse the HTML
-from bs4 import BeautifulSoup
+# Use BeautifulSoup to parse the HTML content
 soup = BeautifulSoup(response.content, 'html.parser')
 
-# Find the relevant information (crypto reserve size and purpose)
-crypto_reserve_size = soup.find("h2",{"class":"heading"}).get_text()
-purpose = soup.find("p",{"class":"description"}).get_text()
+# Find the headline element and get the text
+headline = soup.find('h3', class_='heading')
 
-# Print the retrieved information
-print("Bhutan's crypto reserve size: " + crypto_reserve_size)
-print("Purpose of the crypto reserve: " + purpose)
+# Print the headline
+print("Headline:", headline.text)
 
-# 2. Sentiment Analysis
-# Retrieve news articles and social media posts related to Bhutan's crypto reserve
-news = "https://www.google.com/search
+# 2. Preprocess the headline by removing punctuation, converting all letters to lowercase, and removing stop words.
+# Convert the headline to lowercase
+headline = headline.text.lower()
+
+# Remove punctuation from the headline
+punctuations = '''!()-[]{};:'"\,<>./?@#$%^&*_~'''
+headline = ''.join(char for char in headline if char not in punctuations)
+
