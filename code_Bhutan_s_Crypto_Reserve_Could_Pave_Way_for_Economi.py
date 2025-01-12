@@ -1,35 +1,36 @@
 
 
 # Import necessary libraries
+import requests
 import pandas as pd
 import numpy as np
-import requests
+import matplotlib.pyplot as plt
+import seaborn as sns
+from textblob import TextBlob
+
+# 1. Data Scraping
+# Retrieve data from Coindesk about Bhutan's crypto reserve
+url = "https://www.coindesk.com/bhutan-crypto-reserve/"
+response = requests.get(url)
+
+# Check if response is successful
+if response.status_code == 200:
+    print("Successfully retrieved data from Coindesk.")
+else:
+    print("Data retrieval failed.")
+
+# Use BeautifulSoup to parse the HTML
 from bs4 import BeautifulSoup
+soup = BeautifulSoup(response.content, 'html.parser')
 
-# Create a function to scrape data from the website
-def scrape_data(url):
-    # Send a GET request to the URL
-    response = requests.get(url)
-    # Parse the HTML content using BeautifulSoup
-    soup = BeautifulSoup(response.content, 'html.parser')
-    # Find the table containing the data
-    table = soup.find('table')
-    # Extract the table headers
-    headers = [header.text for header in table.find_all('th')]
-    # Extract the table rows
-    rows = []
-    for row in table.find_all('tr'):
-        rows.append([data.text for data in row.find_all('td')])
-    # Create a pandas dataframe with the extracted data
-    df = pd.DataFrame(rows, columns=headers)
-    # Drop the first row as it contains table headers again
-    df.drop(0, inplace=True)
-    # Reset the index
-    df.reset_index(drop=True, inplace=True)
-    # Return the dataframe
-    return df
+# Find the relevant information (crypto reserve size and purpose)
+crypto_reserve_size = soup.find("h2",{"class":"heading"}).get_text()
+purpose = soup.find("p",{"class":"description"}).get_text()
 
-# Scrape data for Bhutan's cryptocurrency reserve
-crypto_df = scrape_data('https://www.bhutan.gov.bt/government-reserve-cryptocurrency')
+# Print the retrieved information
+print("Bhutan's crypto reserve size: " + crypto_reserve_size)
+print("Purpose of the crypto reserve: " + purpose)
 
-#
+# 2. Sentiment Analysis
+# Retrieve news articles and social media posts related to Bhutan's crypto reserve
+news = "https://www.google.com/search
