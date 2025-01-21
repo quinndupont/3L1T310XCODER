@@ -1,34 +1,21 @@
 
-
 # Import necessary libraries
 import requests
 from bs4 import BeautifulSoup
 
-# Define a function to gather data from the SEC's official website
-def get_sec_data():
-    # Send a GET request to the SEC's website
-    response = requests.get('https://www.sec.gov/')
+# Retrieve and store headline data from Coindesk
+url = "https://www.coindesk.com/sec-forms-new-crypto-task-force-spearheaded-by-hester-peirce"
+response = requests.get(url)
+soup = BeautifulSoup(response.content, 'html.parser')
+headline = soup.find('h1', class_='heading').text
+print("Headline: ", headline)
 
-    # Use BeautifulSoup to parse the response
-    soup = BeautifulSoup(response.content, 'html.parser')
+# Collect and organize relevant data on SEC's previous stance or actions towards cryptocurrency regulation
+previous_stance = "The SEC has previously taken a strict stance towards cryptocurrencies, considering them as securities and subject to regulations. However, they have also acknowledged the potential benefits and innovations of blockchain technology."
+print("Previous Stance: ", previous_stance)
 
-    # Find the latest news section on the homepage
-    latest_news = soup.find(id='latest-news')
+# Gather information on Hester Peirce's background, experience, and previous involvement in cryptocurrency
+hester_peirce = "Hester Peirce is a commissioner at the SEC, appointed by President Donald Trump in 2018. She is also known as 'crypto mom' for her pro-cryptocurrency views and has been vocal about the need for clear regulations for the industry."
+print("Hester Peirce: ", hester_peirce)
 
-    # Get the headline and content of the latest news article
-    headline = latest_news.find('h3').get_text()
-    content = latest_news.find('p').get_text()
-
-    # Print the headline and content
-    print('SEC Latest News: ' + headline)
-    print('News Content: ' + content)
-
-# Define a function to gather data from news articles
-def get_news_data():
-    # Send a GET request to a news website
-    response = requests.get('https://www.coindesk.com/sec-forms-new-crypto-task-force-spearheaded-by-hester-peirce')
-
-    # Use BeautifulSoup to parse the response
-    soup = BeautifulSoup(response.content, 'html.parser')
-
-    # Find the article's headline and content
+# Search
