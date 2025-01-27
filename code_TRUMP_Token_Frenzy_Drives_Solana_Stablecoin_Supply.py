@@ -1,33 +1,30 @@
 
 
 # Import necessary libraries
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
+import requests
+import json
+from datetime import datetime
 
-# Use Coindesk API to retrieve data from article
-coindesk_url = "https://www.coindesk.com/trump-token-frenzy-solana-stablecoin-supply-dex-volumes"
-df = pd.read_html(coindesk_url)[0]
+# Function to get current Solana stablecoin supply from CoinMarketCap
+def get_stablecoin_supply():
+    # Make request to CoinMarketCap API
+    response = requests.get("https://api.coinmarketcap.com/data-api/v3/cryptocurrency/market-pairs/latest?slug=solana&start=1&limit=100&sortBy=market_cap")
+    # Convert response to JSON
+    data = response.json()
+    # Get current stablecoin supply
+    stablecoin_supply = data["data"]["marketPairs"][0]["marketCap"]["totalSupply"]
+    return stablecoin_supply
 
-# Convert data into pandas dataframe
-df = pd.DataFrame(df)
+# Function to get current DEX volumes from Coingecko
+def get_dex_volumes():
+    # Make request to Coingecko API
+    response = requests.get("https://api.coingecko.com/api/v3/coins/solana/dexes")
+    # Convert response to JSON
+    data = response.json()
+    # Get current DEX volumes
+    dex_volumes = data["tickers"][0]["converted_volume"]["usd"]
+    return dex_volumes
 
-# Clean data
-df.drop(columns=["Unnamed: 0"], inplace=True) # Remove irrelevant column
-df.dropna(inplace=True) # Remove rows with missing values
-
-# Descriptive statistics
-print("Stablecoin Supply Stats:")
-print("Mean: ", df["Stablecoin Supply"].mean())
-print("Median: ", df["Stablecoin Supply"].median())
-print("Std Dev: ", df["Stablecoin Supply"].std())
-print()
-print("DEX Volumes Stats:")
-print("Mean: ", df["DEX Volumes"].mean())
-print("Median: ", df["DEX Volumes"].median())
-print("Std Dev: ", df["DEX Volumes"].std())
-
-# Visualize data
-plt.plot(df["Date"], df["Stablecoin Supply"])
-plt.xlabel("Date")
-plt.ylabel("
+# Function to calculate percentage increase
+def calculate_percentage_increase(before, after):
+   
