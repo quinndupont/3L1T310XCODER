@@ -1,38 +1,33 @@
 
 
-# Import necessary libraries and modules
-import requests
-from bs4 import BeautifulSoup
-import tweepy
+# Import necessary libraries
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 
-# Define function to retrieve data from Coindesk articles
-def get_coindesk_articles():
-    # Make a GET request to Coindesk's website
-    response = requests.get("https://www.coindesk.com/tag/trump-token")
+# Use Coindesk API to retrieve data from article
+coindesk_url = "https://www.coindesk.com/trump-token-frenzy-solana-stablecoin-supply-dex-volumes"
+df = pd.read_html(coindesk_url)[0]
 
-    # Use BeautifulSoup to parse the HTML response
-    soup = BeautifulSoup(response.text, "html.parser")
+# Convert data into pandas dataframe
+df = pd.DataFrame(df)
 
-    # Find all articles with the "trump-token" tag
-    articles = soup.find_all("article", class_="article")
+# Clean data
+df.drop(columns=["Unnamed: 0"], inplace=True) # Remove irrelevant column
+df.dropna(inplace=True) # Remove rows with missing values
 
-    # Create an empty list to store article information
-    article_list = []
+# Descriptive statistics
+print("Stablecoin Supply Stats:")
+print("Mean: ", df["Stablecoin Supply"].mean())
+print("Median: ", df["Stablecoin Supply"].median())
+print("Std Dev: ", df["Stablecoin Supply"].std())
+print()
+print("DEX Volumes Stats:")
+print("Mean: ", df["DEX Volumes"].mean())
+print("Median: ", df["DEX Volumes"].median())
+print("Std Dev: ", df["DEX Volumes"].std())
 
-    # Loop through each article
-    for article in articles:
-        # Get the title of the article
-        title = article.find("h3").text
-
-        # Get the publication date of the article
-        date = article.find("time")["datetime"]
-
-        # Get the URL of the article
-        url = article.find("a")["href"]
-
-        # Store the information in a dictionary
-        article_info = {"title": title, "date": date, "url": url}
-
-        # Append the dictionary to the
+# Visualize data
+plt.plot(df["Date"], df["Stablecoin Supply"])
+plt.xlabel("Date")
+plt.ylabel("
