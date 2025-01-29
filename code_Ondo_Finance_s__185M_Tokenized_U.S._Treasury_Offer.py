@@ -1,29 +1,37 @@
 
 
 # Import necessary libraries
-import pandas as pd
-import matplotlib.pyplot as plt
+import requests
+from bs4 import BeautifulSoup
+import nltk
+from nltk.tokenize import word_tokenize
+from nltk.tag import pos_tag
 
-# Define variables for Ondo Finance's offering and XRP Ledger
-ondo_offering = 185000000  # $185M
-xrp_ledger = 'XRP Ledger'
-
-# Gather data on Ondo Finance's tokenized U.S. Treasury offering
-# In this example, we will use hypothetical data
-offering_amount = ondo_offering
-token_type = 'security tokens'
-target_audience = 'institutional investors'
-
-# Print information about the offering
-print("Ondo Finance's tokenized U.S. Treasury offering:")
-print("Amount: $" + str(offering_amount))
-print("Token type: " + token_type)
-print("Target audience: " + target_audience)
-
-# Use data from other similar offerings to compare with Ondo Finance's offering
-# Here, we will use a list of recent tokenized U.S. Treasury offerings
-similar_offers = [150000000, 200000000, 175000000, 250000000, 100000000]
-avg_offering = sum(similar_offers) / len(similar_offers)  # Calculate average offering amount
-
-# Print comparison information
-print("\
+# Define function to extract key information from the headline
+def extract_info(headline):
+  # Convert headline to lowercase and tokenize
+  tokens = word_tokenize(headline.lower())
+  # Tag tokens with their part of speech
+  tagged_tokens = pos_tag(tokens)
+  # Initialize variables to store information
+  company_name = ''
+  offering_amount = ''
+  offering_type = ''
+  platform = ''
+  purpose = ''
+  other_keywords = []
+  # Loop through tagged tokens to extract information
+  for token in tagged_tokens:
+    # Look for named entities tagged as 'ORGANIZATION'
+    if token[1] == 'ORGANIZATION':
+      # Check if company name has already been found
+      if company_name == '':
+        # Assign company name
+        company_name = token[0]
+      # If not, check if offering type has already been found
+      elif offering_type == '':
+        # Assign offering type
+        offering_type = token[0]
+    # Look for numbers tagged as 'CARDINAL'
+    elif token[1] == 'CARDINAL':
+      # Check if offering amount
