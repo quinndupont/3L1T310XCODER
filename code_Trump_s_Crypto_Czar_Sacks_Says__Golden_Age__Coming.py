@@ -1,28 +1,26 @@
 
 
-# Importing necessary libraries
-import re
+# Import necessary libraries
+import requests  # To make HTTP requests
+import json  # To work with JSON data
+from datetime import datetime  # To work with dates and time
+import matplotlib.pyplot as plt  # To visualize data
+import seaborn as sns  # To enhance data visualization
+from textblob import TextBlob  # To perform sentiment analysis
 
-# Defining the headline and news source variables
-headline = "Trump's Crypto Czar Sacks Says 'Golden Age' Coming"
-news_source = input("Please enter the news source: ")
+# Function to gather information on Trump's Crypto Czar
+def get_czar_info():
+    # Make a GET request to the official White House website
+    response = requests.get("https://www.whitehouse.gov/")
+    # Get the HTML content of the website
+    html = response.text
+    # Extract the information on the Crypto Czar from the HTML content
+    czar_info = html[html.find("Trump's Crypto Czar"):html.find("Crypto Czar")]
+    # Clean the extracted information
+    czar_info = czar_info.replace("<h1>", "").replace("</h1>", "").replace("<p>", "").replace("</p>", "")
+    # Return the information about the Crypto Czar
+    return czar_info
 
-# Extracting relevant information from the headline using regular expressions
-name = re.search(r"Trump's Crypto Czar (\w+)", headline).group(1)
-statement = re.search(r"Says '(.*)'", headline).group(1)
-
-# Printing the extracted information
-print("Name of the person mentioned in the headline:", name)
-print("Statement made by the person:", statement)
-
-# Analyzing the statement made by the 'Crypto Czar'
-if statement == 'Golden Age':
-    print("The predicted 'Golden Age' could potentially have a positive impact on the cryptocurrency market.")
-else:
-    print("The statement made by the 'Crypto Czar' does not suggest any major impact on the cryptocurrency market.")
-
-# Providing insights based on the selected news source
-if news_source == 'CoinDesk':
-    print("According to CoinDesk, the 'Golden Age' could refer to a period of increased adoption and mainstream acceptance of cryptocurrencies.")
-elif news_source == 'Coin Telegraph':
-    print("Coin Telegraph suggests that the '
+# Function to gather data on the current state of the cryptocurrency market
+def get_market_data():
+    # Make a GET request to the CoinMarketCap API
