@@ -1,28 +1,40 @@
 
 
-# Import necessary libraries for natural language processing
-import nltk
-from nltk.tokenize import word_tokenize
-from nltk.corpus import stopwords
-from nltk.stem import WordNetLemmatizer
+# Import necessary libraries
+import requests
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
 
-# Define the headline to be analyzed
-headline = "El Salvador Dispatch: Searching for Bitcoin City, the Modern El Dorado"
+# Define function to collect data on El Salvador's decision to adopt Bitcoin
+def collect_data():
+    # Define API endpoint for government announcements
+    url = "https://api.el-salvador.bitcoin.org/api/v1/announcements"
+    
+    # Make GET request to API endpoint
+    response = requests.get(url)
+    
+    # Check status code
+    if response.status_code == 200:
+        # Convert response to JSON format
+        data = response.json()
+        
+        # Create empty list to store government announcements
+        announcements = []
+        
+        # Loop through each announcement and extract relevant information
+        for announcement in data:
+            # Check if announcement is related to Bitcoin adoption
+            if "Bitcoin" in announcement["title"]:
+                # Append announcement title and content to the list
+                announcements.append((announcement["title"], announcement["content"]))
+        
+        # Return list of announcements
+        return announcements
+    else:
+        # Print error message
+        print("Unable to collect data. Please try again later.")
 
-# Extract key themes and topics from the headline using word tokenization
-tokens = word_tokenize(headline)
-
-# Create a list of stop words to be removed from the tokens
-stop_words = set(stopwords.words('english'))
-
-# Remove stop words from the tokens
-filtered_tokens = [word for word in tokens if not word in stop_words]
-
-# Perform lemmatization on the remaining tokens to reduce them to their root form
-lemmatizer = WordNetLemmatizer()
-lemmatized_tokens = [lemmatizer.lemmatize(word) for word in filtered_tokens]
-
-# Identify key themes and topics by looking for specific words and phrases
-location = [word for word in lemmatized_tokens if word == "El" or word == "Salvador"]
-concept = [word for word in lemmatized_tokens if word == "Bitcoin" or word == "City"]
-comparison = [word for word in lemm
+# Define function to collect data on Bitcoin City development plans
+def collect_city_data():
+    # Define API endpoint for
