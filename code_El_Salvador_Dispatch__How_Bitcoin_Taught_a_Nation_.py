@@ -1,33 +1,30 @@
 
 
 # Import necessary libraries
-import pandas as pd
-import numpy as np
-import requests
-import json
-import matplotlib.pyplot as plt
-import seaborn as sns
-from textblob import TextBlob
+import nltk
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
-# Define function to gather data on Bitcoin adoption in El Salvador
-def get_bitcoin_data():
-    # API endpoint for Bitcoin data in El Salvador
-    url = "https://api.alternative.me/v2/ticker/bitcoin/?convert=USD&limit=1"
-    
-    # Make GET request to the API and store response
-    response = requests.get(url)
-    
-    # Convert response to JSON format
-    data = response.json()
-    
-    # Extract relevant data from JSON
-    bitcoin_price = data["data"]["1"]["quotes"]["USD"]["price"]
-    bitcoin_market_cap = data["data"]["1"]["quotes"]["USD"]["market_cap"]
-    bitcoin_volume = data["data"]["1"]["quotes"]["USD"]["volume_24h"]
-    
-    # Return data as a dictionary
-    return {"Price": bitcoin_price, "Market Cap": bitcoin_market_cap, "Volume (24h)": bitcoin_volume}
-
-# Define function to gather data on Bitcoin adoption in El Salvador
-def get_el_salvador_data():
-    # API endpoint for El Salvador data
+# Define function to analyze news articles
+def analyze_news_article(article):
+    # Tokenize headline into separate words
+    tokens = word_tokenize(article)
+    # Remove stopwords from the tokens
+    filtered_tokens = [word for word in tokens if not word in stopwords.words()]
+    # Use VADER to determine sentiment of the article
+    sentiment_analyzer = SentimentIntensityAnalyzer()
+    sentiment_scores = sentiment_analyzer.polarity_scores(article)
+    # Print sentiment score
+    print("Sentiment Score: ", sentiment_scores['compound'])
+    # Categorize article based on sentiment score
+    if sentiment_scores['compound'] >= 0.05:
+        print("Category: News")
+    elif sentiment_scores['compound'] <= -0.05:
+        print("Category: Opinion")
+    else:
+        print("Category: Analysis")
+    # Extract key words and phrases related to cryptocurrency and blockchain technology
+    key_words = []
+    for token in filtered_tokens:
+        if token.lower() == "cryptocurrency" or token.lower() == "blockchain" or token.lower() == "bitcoin
