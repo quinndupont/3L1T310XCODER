@@ -1,34 +1,35 @@
 
 
 # Import necessary libraries
-import re # for regular expressions
-import nltk # for natural language processing
-from nltk.sentiment.vader import SentimentIntensityAnalyzer # for sentiment analysis
+import requests
+from bs4 import BeautifulSoup
+import spacy
+import pandas as pd
+import matplotlib.pyplot as plt
+import networkx as nx
 
-# Define function to extract data from headline
-def extract_data(headline):
-    # Use regular expressions to extract names of individuals involved
-    names = re.findall(r'Libra Token\'s co-creator|Argentinian President Milei|Milei\'s sister', headline)
-    # Use regular expressions to extract action taken
-    action = re.findall(r'paid', headline)
-    # Use regular expressions to extract context
-    context = re.findall(r'Libra Token', headline)
+# Read headline and extract key information
+headline = "Libra Token’s Co-Creator Claimed He Paid Argentinian President Milei’s Sister"
 
-    return names, action, context
+# Extract co-creator's name
+co_creator = headline.split("'")[1]
 
-# Define function to parse extracted data
-def parse_data(names, action, context):
-    # Create empty lists to store parsed data
-    individuals = []
-    roles = []
-    sentiment = ""
+# Extract payment amount
+payment = int(headline.split(" ")[5].replace(",", ""))
 
-    # Loop through names to identify individuals and their roles
-    for name in names:
-        if name == "Libra Token's co-creator":
-            individuals.append(name)
-            roles.append("co-creator")
-        elif name == "Argentinian President Milei":
-            individuals.append(name)
-            roles.append("president")
-        else:
+# Extract recipient's name
+recipient = headline.split(" ")[7] + " " + headline.split(" ")[8]
+
+# Web scraping for co-creator information
+co_creator_url = "https://coindesk.com/tag/" + co_creator.lower()
+co_creator_response = requests.get(co_creator_url)
+co_creator_soup = BeautifulSoup(co_creator_response.text, 'html.parser')
+
+# Extract co-creator's background
+co_creator_bio = co_creator_soup.find("div", {"class": "author-bio"}).text.strip()
+
+# Extract co-creator's current position
+co_creator_position = co_creator_soup.find("div", {"class": "author-bio"}).find("p").text.strip()
+
+# Web scraping for recipient information
+recipient_url = "
