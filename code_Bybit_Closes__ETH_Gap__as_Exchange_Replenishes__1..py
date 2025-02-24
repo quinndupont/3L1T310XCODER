@@ -2,35 +2,37 @@
 
 # Import necessary libraries
 import requests
-from bs4 import BeautifulSoup
-import re
+import json
 import matplotlib.pyplot as plt
-import seaborn as sns
-import numpy as np
-import pandas as pd
-from sklearn.feature_extraction.text import CountVectorizer
-from textblob import TextBlob
 
-# Create a list of keywords
-keywords = ['Bybit', 'Closes', 'ETH Gap', 'Exchange', 'Replenishes', '$1.4B', 'Hole', 'Hack']
+# Define variables
+bybit_url = "https://api.bybit.com/v2/public/tickers?symbol=ETHUSD"
+hack_date = ""
+hack_time = ""
+hack_magnitude = ""
+stolen_eth = 0
+replenished_eth = 0
+replenishment_method = ""
+reputation_impact = ""
+other_exchanges = []
+other_measures = []
 
-# Use web scraping to gather data from Coindesk
-url = 'https://www.coindesk.com/bybit-replenishes-1-4b-hole-after-hack'
-response = requests.get(url)
-soup = BeautifulSoup(response.content, 'html.parser')
+# Function to gather data on recent hack on Bybit
+def get_hack_data():
+    # Make API call to Bybit's public ticker endpoint
+    response = requests.get(bybit_url)
+    # Convert response to JSON format
+    data = response.json()
+    # Extract relevant data from JSON
+    hack_date = data["time"]
+    hack_time = data["data"]["timestamp"]
+    hack_magnitude = data["data"]["last_price"]
+    # Print gathered data
+    print("Recent hack on Bybit:")
+    print("- Date:", hack_date)
+    print("- Time:", hack_time)
+    print("- Magnitude:", hack_magnitude)
 
-# Get the headline
-headline = soup.find('h1').get_text()
-
-# Get the date of the incident
-date = soup.find('div', class_='timeauthor').get_text()
-
-# Get the total amount stolen
-amount_stolen = soup.find('div', class_='amount').get_text()
-
-# Use web scraping to gather data from Bybit's official website
-url = 'https://www.bybit.com/'
-response = requests.get(url)
-soup = BeautifulSoup(response.content, 'html.parser')
-
-# Get the current
+# Function to retrieve information on stolen ETH reserves
+def get_stolen_eth():
+    # Make API call to Bybit's public ticker endpoint
