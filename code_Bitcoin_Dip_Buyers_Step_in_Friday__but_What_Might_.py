@@ -1,31 +1,33 @@
 
 
 # Import necessary libraries
-import requests
-import json
 import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
-from datetime import datetime
 
-# Function to collect real-time data on the Bitcoin market
-def collect_data():
-    # Use requests library to get data from API
-    response = requests.get('https://api.coincap.io/v2/assets/bitcoin/history?interval=d1')
-    # Convert response to JSON format
-    data = json.loads(response.text)
-    # Create a dataframe to store the data
-    df = pd.DataFrame(data['data'])
-    # Convert timestamp to datetime format and set it as index
-    df['date'] = pd.to_datetime(df['date'], unit='ms')
-    df.set_index('date', inplace=True)
-    return df
+# Read in dataset
+bitcoin_data = pd.read_csv('bitcoin_data.csv')
 
-# Function to identify dip-buyers
-def identify_dip_buyers(df):
-    # Calculate 7-day rolling average of price
-    df['rolling_avg'] = df['priceUsd'].rolling(window=7).mean()
-    # Identify dips as price below rolling average
-    df['dip'] = np.where(df['priceUsd'] < df['rolling_avg'], 1, 0)
-    # Calculate frequency of dips
-    dip_frequency
+# Define a function to analyze buying patterns during dips and weekends
+def analyze_buying_patterns(data, start_date=None, end_date=None):
+    """
+    This function analyzes the buying patterns of Bitcoin during dips and weekends.
+
+    Parameters:
+    data (DataFrame): Dataset containing Bitcoin price fluctuations and volume.
+    start_date (str): Start date for analysis (optional).
+    end_date (str): End date for analysis (optional).
+
+    Returns:
+    graph (matplotlib.pyplot): Visual representation of buying patterns during dips and weekends.
+    avg_volume (float): Average dip-buying volume.
+    percentage (float): Percentage of dip-buyers during the specified time frame.
+    """
+    # Filter data based on input dates (if any)
+    if start_date and end_date:
+        filtered_data = data[(data['Date'] >= start_date) & (data['Date'] <= end_date)]
+    elif start_date:
+        filtered_data = data[(data['Date'] >= start_date)]
+    elif end_date:
+        filtered_data = data[(data['Date'] <= end_date)]
+    else:
+        filtered_data
