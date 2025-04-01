@@ -1,38 +1,25 @@
+ 
+4. Calculate the predicted price of Bitcoin by multiplying the current price by 0.9 (90%).
+5. Print a statement using string formatting to display the predicted price and the name of the manager making the prediction.
+6. Import the matplotlib library to create a graph.
+7. Create a list of prices that includes the current price and the predicted price.
+8. Create a list of labels for the x-axis, which includes the current price and the predicted price.
+9. Use the matplotlib library to plot the graph, with the x-axis labels, y-axis labels, title, and legend.
+10. Display the graph using the show() function.
 
+Code:
 
-# Import necessary libraries
 import requests
-import pandas as pd
 import matplotlib.pyplot as plt
-from datetime import datetime
 
-# Define function to gather data from various sources
-def gather_data():
-    
-    # Use requests library to get data from CryptoCompare API
-    url = "https://min-api.cryptocompare.com/data/histoday?fsym=BTC&tsym=USD&limit=365"
-    response = requests.get(url)
-    data = response.json()['Data']
-    
-    # Convert data into a pandas dataframe
-    df = pd.DataFrame(data)
-    
-    # Drop unnecessary columns
-    df.drop(['volumeto', 'conversionType', 'conversionSymbol'], axis=1, inplace=True)
-    
-    # Convert timestamp to readable date format
-    df['time'] = pd.to_datetime(df['time'], unit='s')
-    
-    # Return dataframe
-    return df
+# Function to analyze the predicted price of Bitcoin
+def predict_bitcoin_price(current_price, manager_name):
+    # Retrieving the current price of Bitcoin
+    response = requests.get('https://api.coindesk.com/v1/bpi/currentprice.json')
+    current_price = response.json()['bpi']['USD']['rate_float']
 
-# Define function to plot Bitcoin price movement
-def plot_price_movement(df):
-    
-    # Plot Bitcoin price over time
-    plt.figure(figsize=(12,6))
-    plt.plot(df['time'], df['close'], color='blue')
-    plt.xlabel('Date')
-    plt.ylabel('Bitcoin Price (USD)')
-    plt.title('Bitcoin Price Movement')
-   
+    # Calculating the predicted price of Bitcoin
+    predicted_price = current_price * 0.9
+
+    # Printing the predicted price and the name of the manager making the prediction
+    print("According to {}, the
